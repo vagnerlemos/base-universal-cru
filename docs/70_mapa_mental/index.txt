@@ -1,0 +1,290 @@
+
+
+PUBLIC/
+└── index.php
+    └── require vendor/autoload.php
+    └── require bootstrap/app.php
+         │
+         ▼
+        APP --------------------------------------------------------------
+                APP (Illuminate\Foundation\Application)
+                │
+                │  ─────────────────────────────────────────
+                │  PAPEL DO APP
+                │  ─────────────────────────────────────────
+                │  • Container (IoC)
+                │  • Registro de serviços
+                │  • Resolvedor de dependências
+                │  • NÃO executa fluxo
+
+                Providers --------------------------------------------------------
+                    ├── Providers (configuram o App)
+                    │   │
+                    │   ├── AppServiceProvider
+                    │   │   ├── register()
+                    │   │   │   └── bindings genéricos
+                    │   │   └── boot()
+                    │   │       └── ajustes globais
+                    │   │
+                    │   ├── RouteServiceProvider
+                    │   │   ├── register()
+                    │   │   │   └── registra Router no container
+                    │   │   └── boot()
+                    │   │       └── loadRoutesFrom()
+                    │   │           ├── routes/web.php
+                    │   │           └── routes/api.php
+                    │   │               └── REGISTRO DE ROTAS
+                    │   │
+                    │   ├── AuthServiceProvider
+                    │   │   └── registra guards, policies
+                    │   │
+                    │   ├── EventServiceProvider
+                    │   │   └── registra listeners
+                    │   │
+                    │   └── Outros Providers
+
+                Contracts --------------------------------------------------------
+                    ├── Contracts (Regras / Interfaces)
+                    │   │
+                    │   ├── Http\Kernel (contrato)
+                    │   │   │   ├── handle(Request)
+                    │   │   │   └── terminate(Request, Response)
+                    │   │   │
+                    │   │   └── define O QUE um Kernel deve fazer
+                    │   │
+                    │   └── Outros contratos (Auth, Cache, etc)
+
+                Bindings ---------------------------------------------------------
+                    ├── Bindings (feitos no bootstrap)
+                    │   │
+                    │   └── singleton(HttpKernel::class → App\Http\Kernel)
+
+                Kernel HTTP ------------------------------------------------------
+                    ├── Kernel HTTP (Classe concreta)
+                    │   │
+                    │   │  ───────────────────────────────────
+                    │   │  PAPEL DO KERNEL
+                    │   │  ───────────────────────────────────
+                    │   │  • Maestro do Request
+                    │   │  • Controla a ordem de execução
+                    │   │
+                    │   ├── $middleware (globais)
+                    │   │   ├── TrustProxies
+                    │   │   ├── HandleCors
+                    │   │   ├── PreventRequestsDuringMaintenance
+                    │   │   ├── TrimStrings
+                    │   │   └── ConvertEmptyStringsToNull
+                    │   │
+                    │   ├── $middlewareGroups
+                    │   │   ├── web
+                    │   │   │   ├── EncryptCookies
+                    │   │   │   ├── StartSession
+                    │   │   │   ├── ShareErrorsFromSession
+                    │   │   │   ├── VerifyCsrfToken
+                    │   │   │   └── SubstituteBindings
+                    │   │   │
+                    │   │   └── api
+                    │   │       ├── Throttle
+                    │   │       └── SubstituteBindings
+                    │   │
+                    │   ├── $routeMiddleware (aliases)
+                    │   │   ├── auth
+                    │   │   ├── guest
+                    │   │   ├── throttle
+                    │   │   └── etc
+                    │   │
+                    │   └── MÉTODOS (PORTAS DE ENTRADA)
+                    │       │
+                    │       ├── handle(Request)
+                    │       │   └── PIPELINE 1
+                    │       │       └── Middleware Globais
+                    │       │
+                    │       └── sendRequestThroughRouter(Request)
+                    │           └── chama Router
+
+                Router -----------------------------------------------------------
+                    ├── Router (Illuminate\Routing\Router)
+                    │   │
+                    │   │  ───────────────────────────────────
+                    │   │  PAPEL DO ROUTER
+                    │   │  ───────────────────────────────────
+                    │   │  • Decide a rota
+                    │   │  • Enriquece o Request
+                    │   │  • Executa middlewares da rota
+                    │   │  • Dispara o Controller
+                    │   │
+                    │   ├── Tabela de Rotas
+                    │   │   ├── GET /system/login
+                    │   │   ├── POST /system/login
+                    │   │   ├── GET /vendas/login
+                    │   │   └── etc
+                    │   │
+                    │   ├── match(Request)
+                    │   │   └── encontra Route
+                    │   │
+                    │   ├── bind Route → Request
+                    │   │   └── Request ganha:
+                    │   │       ├── route()
+                    │   │       ├── parameters
+                    │   │       ├── defaults
+                    │   │       └── middleware
+                    │   │
+                    │   ├── gatherRouteMiddleware()
+                    │   │
+                    │   └── PIPELINE 2 (por rota)
+                    │       │
+                    │       ├── Middleware da rota
+                    │       │   ├── web
+                    │       │   ├── auth
+                    │       │   └── outros
+                    │       │
+                    │       └── Route::run()
+                    │           └── chama Controller
+
+                Middleware -------------------------------------------------------
+                    ├── Middleware (Filtros)
+                    │   │
+                    │   ├── handle(Request, next)
+                    │   │   ├── pode alterar Request
+                    │   │   ├── pode bloquear
+                    │   │   ├── pode redirecionar
+                    │   │   └── pode abortar fluxo
+                    │   │
+                    │   └── se TODOS passarem → segue
+
+                Controller -------------------------------------------------------
+                    ├── Controller
+                    │   │
+                    │   ├── Método Action(Request)
+                    │   │   ├── usa Request enriquecido
+                    │   │   ├── acessa session
+                    │   │   ├── acessa user
+                    │   │   └── executa regra de negócio
+                    │   │
+                    │   └── retorna Response
+
+                Response ---------------------------------------------------------
+                    ├── Response
+                    │   │
+                    │   └── volta pelo Kernel
+
+                Kernel::terminate ------------------------------------------------
+                    ├── Kernel::terminate()
+                    |   └── middlewares termináveis
+
+
+
+
+
+estudos:-----------------------
+                    Providers
+
+                    AppServiceProvider
+                        register()
+                            bindings genéricos
+                        boot()
+                            ajustes globais
+
+                    RouteServiceProvider
+                        register()
+                            Router (sera usado por HTTP Kernel)
+                                GET /system/login
+                                    → Controller: LoginController@showLoginForm
+                                    → name: system.login
+                                    → defaults: app=system
+                                    → middleware da Rota: web
+
+                        boot()
+                            loadRoutesFrom()
+                                routes/web.php
+                                routes/api.php
+                                    REGISTRO DE ROTAS
+                                routes/system.php
+                                routes/vendas.php
+
+                    RouteServiceProvider
+                    │
+                    ├── register()
+                    │   │
+                    │   └── (fase de configuração)
+                    │       ├── garante que o Router existe no container
+                    │       ├── define bindings relacionados a rotas (se houver)
+                    │       └── NÃO executa rotas
+                    │
+                    └── boot()
+                        │
+                        └── (fase de registro de rotas)
+                            │
+                            ├── loadRoutesFrom()
+                            │   ├── routes/web.php
+                            │   ├── routes/api.php
+                            │   ├── routes/system.php
+                            │   └── routes/vendas.php
+                            │
+                            └── para cada rota encontrada:
+                                └── Router recebe:
+                                    ├── método HTTP (GET, POST…)
+                                    ├── URI (/system/login)
+                                    ├── Controller + método
+                                    ├── name (system.login)
+                                    ├── defaults (app=system)
+                                    └── middleware da rota (web, auth, etc)
+                                    exemplo:
+                                    Router fica disponível para HTTP Kernel -> handle(Request) -> chama Router
+                                    │
+                                    ├── GET /system/login                                   método HTTP (GET, POST…) URI (/system/login)
+                                    │   ├── controller: LoginController@showLoginForm       Controller + método
+                                    │   ├── name: system.login                              name (system.login)
+                                    │   ├── defaults: { app: system }                       defaults (app=system)
+                                    │   └── middleware: [web]                               middleware da rota (web, auth, etc)
+                                    │
+                                    ├── POST /system/login
+                                    │   └── ...
+                                    │
+                                    ├── GET /vendas/login
+                                    │   └── ...
+                                    │
+                                    └── outras rotas...
+
+                    AuthServiceProvider
+                        registra guards, policies
+
+                    EventServiceProvider
+                        registra listeners
+
+                    Outros Providers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
