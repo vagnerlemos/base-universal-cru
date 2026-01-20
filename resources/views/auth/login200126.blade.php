@@ -39,26 +39,16 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ url($app . '/login') }}">
+            <form method="POST" action="/{{ $app }}/login">
                 @csrf
 
                 <label for="email">E-mail</label>
-                <input id="email"
-                       name="email"
-                       type="email"
-                       value="{{ old('email') }}"
-                       required
-                       autofocus>
+                <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus>
 
                 <label for="password">Senha</label>
-                <input id="password"
-                       name="password"
-                       type="password"
-                       required>
+                <input id="password" name="password" type="password" required>
 
-                <button type="submit" style="background: {{ $brand['color'] }};">
-                    Entrar
-                </button>
+                <button type="submit" style="background: {{ $brand['color'] }};">Entrar</button>
 
                 <div class="hint">
                     Contexto atual: <strong>{{ $app }}</strong>

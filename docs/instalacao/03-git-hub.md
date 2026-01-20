@@ -82,54 +82,34 @@ git config --global --list
     Deixe essa tela aberta porque você vai copiar a URL do repo.
 
 4) Subir o projeto local para o GitHub (passo a passo)
-Cenário A (recomendado): você já tem o projeto aberto no VS Code
-
-Abra a pasta do seu projeto cru no VS Code (File → Open Folder)
-
-Abra Source Control (Ctrl+Shift+G)
-
-Se aparecer “Initialize Repository” → clique.
-
-Isso cria o .git localmente.
+    Cenário A (recomendado): você já tem o projeto aberto no VS Code
+    Abra a pasta do seu projeto cru no VS Code (File → Open Folder)
+    Abra Source Control (Ctrl+Shift+G)
+    Se aparecer “Initialize Repository” → clique.
+    Isso cria o .git localmente.
 
 4.1 Criar o primeiro commit
-
-No Source Control, clique em + para “Stage” (ou “Stage All Changes”)
-
-No campo de mensagem, digite algo como:
-
-chore: initial commit (projeto cru)
-
-Clique em Commit
-
-Se o VS Code pedir para “Enable Smart Commit” ou algo assim, pode aceitar.
+    No Source Control, clique em + para “Stage” (ou “Stage All Changes”)
+    No campo de mensagem, digite algo como:
+    chore: initial commit (projeto cru)
+    Clique em Commit
+    Se o VS Code pedir para “Enable Smart Commit” ou algo assim, pode aceitar.
 
 4.2 Ligar o repositório local ao GitHub (remote)
 
-Agora você precisa adicionar o “remote origin”.
-
-No terminal do VS Code, rode:
-
-git branch -M main
-
-
-Agora adicione o remote (use a URL do seu repo):
-
-Se for HTTPS (mais simples):
-
-git remote add origin https://github.com/SEU_USUARIO/NOME_DO_REPO.git
-
-
-Conferir:
-
-git remote -v
+    Agora você precisa adicionar o “remote origin”.
+    No terminal do VS Code, rode:
+    git branch -M main
+    Agora adicione o remote (use a URL do seu repo):
+    Se for HTTPS (mais simples):
+    git remote add origin https://github.com/vagnerlemos/base-universal-cru
+    Conferir:
+    git remote -v
 
 4.3 Fazer o push (enviar)
-git push -u origin main
-
-
-Na primeira vez, vai abrir login/autorizar. Conclua.
-Depois disso, os próximos push/commit ficam fáceis.
+    git push -u origin main
+    Na primeira vez, vai abrir login/autorizar. Conclua.
+    Depois disso, os próximos push/commit ficam fáceis.
 
 5) Fluxo diário (commit + push)
 

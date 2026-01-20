@@ -1,0 +1,71 @@
+🌐 SITUAÇÃO ATUAL (como está hoje)
+
+Você tem:
+
+Domínio principal do servidor:
+fruticon.com.br → raiz httpdocs/
+
+Dentro de httpdocs/ criaram:
+
+httpdocs/
+ └─ foodstore/
+
+
+E o domínio:
+
+www.foodstorebrasil.com.br
+
+
+aponta para:
+
+httpdocs/foodstore
+
+
+👉 Isso está correto e não vamos mexer nisso.
+
+🎯 OBJETIVO
+
+Você quer acessar:
+
+www.foodstorebrasil.com.br/teste
+www.foodstorebrasil.com.br/teste/system
+
+
+Rodando um Laravel separado, sem quebrar o site atual.
+
+✅ SOLUÇÃO CORRETA (SEM QUEBRAR NADA)
+📁 Estrutura FINAL de pastas
+httpdocs/
+└─ foodstore/                 ← site atual (já existente)
+   ├─ index.php
+   ├─ assets/
+   ├─ css/
+   ├─ js/
+   ├─ testelaravel/           ← NOVO (Laravel public)
+   │  ├─ index.php            ← vem do public do Laravel
+   │  ├─ .htaccess
+   │  └─ build / assets
+   │
+   └─ (resto do site atual)
+
+
+E FORA do httpdocs (muito importante):
+
+/base_universal_crua_v0/
+├─ app/
+├─ bootstrap/
+├─ config/
+├─ database/
+├─ routes/
+├─ resources/
+├─ storage/
+├─ vendor/
+├─ .env
+└─ public/
+   ├─ index.php   ← referência
+   └─ .htaccess
+
+file zila
+    pasta:
+    base_universal_crua_v0/storage  775
+    base_universal_crua_v0/bootstrap/cache 775
